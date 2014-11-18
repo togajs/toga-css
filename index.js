@@ -1,11 +1,24 @@
 'use strict';
 
 /**
- * # Toga JavaScript Parser
+ * # Toga CSS Parser
  *
  * Generates an abstract syntax tree based on a customizable regular-expression
  * grammar for use in the Toga eco-system. Tags are parsed greedily. If it looks
  * like a tag, it's a tag.
+ *
+ * Supports generating documentation for:
+ *
+ * - css
+ * - less
+ * - scss
+ *
+ * Recognized tags:
+ *
+ * - category
+ * - extends
+ * - module
+ * - title
  */
 
 var tunic = require('tunic'),
@@ -15,16 +28,10 @@ var tunic = require('tunic'),
 	 * Default options.
 	 */
 	defaults = {
-		extension: /.(js|ts)$/,
+		extension: /.(css|less|scss)$/,
 		namedTags: [
 			'module',
-			'imports',
-			'exports',
-			'class',
-			'extends',
-			'method',
-			'param',
-			'property'
+			'extends'
 		]
 	};
 
