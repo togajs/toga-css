@@ -22,7 +22,7 @@
   },
   "scripts": {
     "coveralls": "cat ./coverage/lcov.info | coveralls",
-    "test": "gulp"
+    "test": "gulp test"
   },
   "dependencies": {
     "mtil": "^0.1.3",
