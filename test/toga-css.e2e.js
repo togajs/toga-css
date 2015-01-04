@@ -3,14 +3,13 @@
 var css = require('../index'),
 	es = require('event-stream'),
 	expect = require('expect.js'),
-	fs = require('fs'),
 	toga = require('toga'),
 
 	config = {
-		css: __dirname + '/fixtures/**/*.css',
+		css:  __dirname + '/fixtures/**/*.css',
 		less: __dirname + '/fixtures/**/*.less',
 		scss: __dirname + '/fixtures/**/*.scss',
-		txt: __dirname + '/fixtures/**/*.txt',
+		txt:  __dirname + '/fixtures/**/*.txt',
 		dest: __dirname + '/actual'
 	};
 
@@ -21,7 +20,7 @@ describe('toga-css e2e', function () {
 		count++;
 
 		var expected = file.path.replace('fixtures', 'expected') + '.json';
-		expect(JSON.stringify(file.ast, null, 4) + '\n').to.be(fs.readFileSync(expected, 'utf8'));
+		expect(JSON.stringify(file.ast)).to.be(JSON.stringify(require(expected)));
 		cb(null, file);
 	}
 
@@ -32,9 +31,11 @@ describe('toga-css e2e', function () {
 		cb(null, file);
 	}
 
-	it('should parse css files', function (done) {
+	beforeEach(function () {
 		count = 0;
+	});
 
+	it('should parse css files', function (done) {
 		toga
 			.src(config.css)
 			.pipe(css.parser())
@@ -48,8 +49,6 @@ describe('toga-css e2e', function () {
 	});
 
 	it('should not parse empty files', function (done) {
-		count = 0;
-
 		var files = [
 			{ path: 'foo.css' },
 			{ path: 'foo.css', content: null },
@@ -68,8 +67,6 @@ describe('toga-css e2e', function () {
 	});
 
 	it('should not parse unknown file types', function (done) {
-		count = 0;
-
 		toga
 			.src(config.txt)
 			.pipe(css.parser())

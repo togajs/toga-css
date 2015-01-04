@@ -12,21 +12,12 @@
  * - css
  * - less
  * - scss
- *
- * Recognized tags:
- *
- * - category
- * - extends
- * - module
- * - title
  */
 
 var tunic = require('tunic'),
 	mixin = require('mtil/object/mixin'),
 
-	/**
-	 * Default options.
-	 */
+	/** Default options. */
 	defaults = {
 		extension: /.(css|less|scss)$/,
 		namedTags: [
