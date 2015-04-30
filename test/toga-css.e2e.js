@@ -1,81 +1,93 @@
-'use strict';
+/*eslint-env mocha */
 
-var css = require('../index'),
-	es = require('event-stream'),
-	expect = require('expect.js'),
-	toga = require('toga'),
+import { parser } from '../index';
+import expect from 'expect';
+import streamArray from 'stream-array';
+import vinylFs from 'vinyl-fs';
+import { join } from 'path';
+import { readFileSync } from 'fs';
 
-	config = {
-		css:  __dirname + '/fixtures/**/*.css',
-		less: __dirname + '/fixtures/**/*.less',
-		scss: __dirname + '/fixtures/**/*.scss',
-		txt:  __dirname + '/fixtures/**/*.txt',
-		dest: __dirname + '/actual'
-	};
+var config = {
+	fixtures: join(__dirname, '/fixtures'),
+	expected: join(__dirname, '/expected'),
+	actual: join(__dirname, '/actual')
+};
 
 describe('toga-css e2e', function () {
-	var count;
+	describe('raw streams', function () {
+		function testWithArray(array, stream, done) {
+			function expectChunk(chunk) {
+				expect(chunk).toEqual({
+					type: 'Document',
+					blocks: [{
+						contents: 'hello',
+						type: 'Code'
+					}]
+				});
+			}
 
-	function toEqualExpected(file, cb) {
-		count++;
+			streamArray(array)
+				.pipe(stream)
+				.on('data', expectChunk)
+				.on('error', done)
+				.on('end', done);
+		}
 
-		var expected = file.path.replace('fixtures', 'expected') + '.json';
-		expect(JSON.stringify(file.ast)).to.be(JSON.stringify(require(expected)));
-		cb(null, file);
-	}
+		it('should parse strings', function (done) {
+			var strings = ['hello', 'hello'];
 
-	function toEqualUndefined(file, cb) {
-		count++;
+			testWithArray(strings, parser(), done);
+		});
 
-		expect(file.toga).to.be(undefined);
-		cb(null, file);
-	}
+		it('should parse buffers', function (done) {
+			var buffers = [new Buffer('hello'), new Buffer('hello')];
 
-	beforeEach(function () {
-		count = 0;
+			testWithArray(buffers, parser(), done);
+		});
 	});
 
-	it('should parse css files', function (done) {
-		toga
-			.src(config.css)
-			.pipe(css.parser())
-			.pipe(es.map(toEqualExpected))
-			.pipe(toga.dest(config.dest))
-			.on('error', done)
-			.on('end', function () {
-				expect(count).to.be(8);
-				done();
-			});
-	});
+	describe('object streams', function () {
+		function testWithFile(filename, stream, done) {
+			var fixture = join(config.fixtures, filename),
+				expected = join(config.expected, filename + '.json');
 
-	it('should not parse empty files', function (done) {
-		var files = [
-			{ path: 'foo.css' },
-			{ path: 'foo.css', content: null },
-			undefined
-		];
+			function expectFile(file) {
+				var actual = JSON.stringify(file.ast, null, 2) + '\n';
 
-		es
-			.readArray(files)
-			.pipe(css.parser())
-			.pipe(es.map(toEqualUndefined))
-			.on('error', done)
-			.on('end', function () {
-				expect(count).to.be(2);
-				done();
-			});
-	});
+				expect(actual).toEqual(String(readFileSync(expected)));
+			}
 
-	it('should not parse unknown file types', function (done) {
-		toga
-			.src(config.txt)
-			.pipe(css.parser())
-			.pipe(es.map(toEqualUndefined))
-			.pipe(toga.dest(config.dest))
-			.on('error', done)
-			.on('end', function () {
-				expect(count).to.be(0);
-				done();
-			});
+			vinylFs
+				.src(fixture)
+				.pipe(stream)
+				.on('data', expectFile)
+				.on('error', done)
+				.on('end', done);
+		}
+
+		it('should parse css', function (done) {
+			testWithFile('tags.css', parser(), done);
+		});
+
+		it('should parse less', function (done) {
+			testWithFile('tags.less', parser(), done);
+		});
+
+		it('should parse scss', function (done) {
+			testWithFile('tags.scss', parser(), done);
+		});
+
+		it('should ignore unknown files', function (done) {
+			function expectFile(file) {
+				expect(file.ast).toBe(undefined);
+			}
+
+			vinylFs
+				.src(join(config.fixtures, 'unused.coffee'))
+				.pipe(parser())
+				.on('data', expectFile)
+				.on('error', done)
+				.on('end', done);
+		});
 	});
 });

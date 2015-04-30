@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * # Toga CSS Parser
  *
@@ -14,20 +12,19 @@
  * - scss
  */
 
-var tunic = require('tunic'),
-	mixin = require('mtil/object/mixin'),
+import Tunic from 'tunic';
+import mixin from 'mtil/object/mixin';
 
-	/** Default options. */
-	defaults = {
-		extension: /.(css|less|scss)$/,
-		namedTags: [
-			'module',
-			'extends'
-		]
-	};
-
-exports.parser = function (options) {
-	options = mixin({}, defaults, options);
-
-	return tunic(options);
+var parserDefaults = {
+	extension: /.(css|less|scss)$/,
+	namedTags: [
+		'module',
+		'extends'
+	]
 };
+
+export function parser(options) {
+	options = mixin({}, parserDefaults, options);
+
+	return new Tunic(options);
+}
