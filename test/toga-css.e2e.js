@@ -1,17 +1,17 @@
 /*eslint-env mocha */
 
-import { parser } from '../index';
-import expect from 'expect';
-import streamArray from 'stream-array';
-import vinylFs from 'vinyl-fs';
-import { join } from 'path';
-import { readFileSync } from 'fs';
+var parser = require('../src/toga-css').parser,
+	expect = require('expect'),
+	streamArray = require('stream-array'),
+	toga = require('toga'),
+	join = require('path').join,
+	readFileSync = require('fs').readFileSync,
 
-var config = {
-	fixtures: join(__dirname, '/fixtures'),
-	expected: join(__dirname, '/expected'),
-	actual: join(__dirname, '/actual')
-};
+	config = {
+		fixtures: join(__dirname, 'fixtures'),
+		expected: join(__dirname, 'expected'),
+		actual: join(__dirname, 'actual')
+	};
 
 describe('toga-css e2e', function () {
 	describe('raw streams', function () {
@@ -57,7 +57,7 @@ describe('toga-css e2e', function () {
 				expect(actual).toEqual(String(readFileSync(expected)));
 			}
 
-			vinylFs
+			toga
 				.src(fixture)
 				.pipe(stream)
 				.on('data', expectFile)
@@ -82,7 +82,7 @@ describe('toga-css e2e', function () {
 				expect(file.ast).toBe(undefined);
 			}
 
-			vinylFs
+			toga
 				.src(join(config.fixtures, 'unused.coffee'))
 				.pipe(parser())
 				.on('data', expectFile)
