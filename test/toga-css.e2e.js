@@ -18,10 +18,12 @@ describe('toga-css e2e', function () {
 		function testWithArray(array, stream, done) {
 			function expectChunk(chunk) {
 				expect(chunk).toEqual({
-					type: 'Document',
-					blocks: [{
-						contents: 'hello',
-						type: 'Code'
+					type: 'Documentation',
+					body: [{
+						type: 'CommentBlock',
+						description: '',
+						trailingCode: 'hello',
+						tags: []
 					}]
 				});
 			}
@@ -52,7 +54,7 @@ describe('toga-css e2e', function () {
 				expected = join(config.expected, filename + '.json');
 
 			function expectFile(file) {
-				var actual = JSON.stringify(file.ast, null, 2) + '\n';
+				var actual = JSON.stringify(file.docAst, null, 2) + '\n';
 
 				expect(actual).toEqual(String(readFileSync(expected)));
 			}
@@ -79,7 +81,7 @@ describe('toga-css e2e', function () {
 
 		it('should ignore unknown files', function (done) {
 			function expectFile(file) {
-				expect(file.ast).toBe(undefined);
+				expect(file.docAst).toBe(undefined);
 			}
 
 			toga

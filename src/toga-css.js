@@ -14,8 +14,19 @@ var parserDefaults = {
 	name: 'toga-css',
 	extension: /.(css|less|scss)$/,
 	namedTags: [
+		'arg',
+		'argument',
+		'atom',
+		'class',
+		'extends',
+		'inherits',
+		'mixin',
 		'module',
-		'extends'
+		'molecule',
+		'object',
+		'organism',
+		'param',
+		'parameter'
 	]
 };
 
