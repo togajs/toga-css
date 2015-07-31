@@ -27,7 +27,7 @@ var _tunic2 = _interopRequireDefault(_tunic);
 var parserDefaults = {
 	name: 'toga-css',
 	extension: /.(css|less|scss)$/,
-	namedTags: ['module', 'extends']
+	namedTags: ['arg', 'argument', 'atom', 'class', 'extends', 'inherits', 'mixin', 'module', 'molecule', 'object', 'organism', 'param', 'parameter']
 };
 
 function parser(options) {

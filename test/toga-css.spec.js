@@ -1,7 +1,7 @@
-/*eslint-env mocha */
+/* eslint-env mocha */
 
-var parser = require('../src/toga-css').parser,
-	expect = require('expect');
+import { parser } from '../src/toga-css';
+import expect from 'expect';
 
 describe('toga-css spec', function () {
 	describe('parser', function () {
