@@ -6,11 +6,11 @@ import toga from 'toga';
 import { join } from 'path';
 import { readFileSync } from 'fs';
 
-	var config = {
-		fixtures: join(__dirname, 'fixtures'),
-		expected: join(__dirname, 'expected'),
-		actual: join(__dirname, 'actual')
-	};
+var config = {
+	fixtures: join(__dirname, 'fixtures'),
+	expected: join(__dirname, 'expected'),
+	actual: join(__dirname, 'actual')
+};
 
 describe('toga-css e2e', function () {
 	describe('object streams', function () {
