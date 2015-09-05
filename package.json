@@ -1,6 +1,6 @@
 {
   "name": "toga-css",
-  "version": "0.1.3",
+  "version": "1.0.0",
   "description": "A CSS inline documentation-block parser.",
   "keywords": [
     "togaplugin",
